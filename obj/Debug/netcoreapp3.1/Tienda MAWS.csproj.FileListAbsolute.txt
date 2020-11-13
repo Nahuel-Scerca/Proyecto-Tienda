@@ -1,0 +1,10 @@
+C:\Users\Nahuel\source\repos\Tienda MAWS\bin\Debug\netcoreapp3.1\appsettings.Development.json
+C:\Users\Nahuel\source\repos\Tienda MAWS\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\Nahuel\source\repos\Tienda MAWS\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\Nahuel\source\repos\Tienda MAWS\bin\Debug\netcoreapp3.1\Tienda MAWS.exe
+C:\Users\Nahuel\source\repos\Tienda MAWS\obj\Debug\netcoreapp3.1\Tienda MAWS.csprojAssemblyReference.cache
+C:\Users\Nahuel\source\repos\Tienda MAWS\obj\Debug\netcoreapp3.1\Tienda MAWS.AssemblyInfoInputs.cache
+C:\Users\Nahuel\source\repos\Tienda MAWS\obj\Debug\netcoreapp3.1\Tienda MAWS.AssemblyInfo.cs
+C:\Users\Nahuel\source\repos\Tienda MAWS\obj\Debug\netcoreapp3.1\Tienda MAWS.RazorTargetAssemblyInfo.cache
+C:\Users\Nahuel\source\repos\Tienda MAWS\obj\Debug\netcoreapp3.1\staticwebassets\Tienda MAWS.StaticWebAssets.Manifest.cache
+C:\Users\Nahuel\source\repos\Tienda MAWS\obj\Debug\netcoreapp3.1\staticwebassets\Tienda MAWS.StaticWebAssets.xml
