@@ -13,7 +13,6 @@ namespace Tienda_MAWS.Models
 
         }
         public DbSet<Cliente> Clientes { get; set; }
-        public DbSet<EstadoPedido> EstadosPedidos { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<PedidoProducto> PedidosProductos { get; set; }
         public DbSet<Producto> Productos { get; set; }

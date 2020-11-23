@@ -24,48 +24,125 @@ namespace Tienda_MAWS.Api
         }
 
         // GET: api/Pedidos
-        [HttpGet]
+        [HttpGet("Disponibles")]
         public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidosDisponibles()
-        {
-            var usuario = User.Identity.Name;
-            if (usuario != null)
-            {
-                var pedidos = await _context.Pedidos.Where(pedidos=> pedidos.Asingnado==0).ToListAsync();
-                return pedidos;
-            }
-            return NotFound();
-
-        }
-
-        // GET: api/Pedidos/5
-        [HttpGet("/PedidosAdquiridos")]
-        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedido()
-        {
-            var usuario = User.Identity.Name;
-
-            if (usuario != null)
-            {
-                var pedidos = await _context.Pedidos.Where(pedidos => pedidos.UsuarioACargo == usuario).ToListAsync();
-                return pedidos;
-            }
-            return NotFound();
-        }
-
-        // PUT: api/Pedidos/5
-        [HttpPut("/ActualizarEstado/{id}")]
-        public async Task<IActionResult> PutPedido(int id, int estadoPedidoId)
         {
             try
             {
-                var pedido = await _context.Pedidos.FirstOrDefaultAsync(e=> e.Id ==id);
+                var usuario = User.Identity.Name;
+                if (usuario != null)
+                {
+
+                    var pedidos = await _context.Pedidos
+                        .Include(pedidos => pedidos.Cliente)
+                        .Where(pedidos => pedidos.Asignado == 0).ToListAsync();
+                    return pedidos;
+                }
+                return NotFound();
+            }
+            catch(Exception ex){
+                return BadRequest(ex);
+            }
+          
+        }
+
+
+        // GET: api/Pedidos/Vendidos
+        [HttpGet("Vendidos")]
+        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidosVendidos()
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+                if (usuario != null)
+                {
+
+                    var pedidos = await _context.Pedidos
+                        .Include(pedidos => pedidos.Cliente)
+                        .Where(pedidos => pedidos.Estado == 3).ToListAsync();
+                    return pedidos;
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+        }
+
+        // GET: api/Pedidos/Adquiridos
+        [HttpGet("Adquiridos")]
+        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedido()
+        {
+            try {
+                var usuario = User.Identity.Name;
+
+                if (usuario != null)
+                {
+                    var pedidos = await _context.Pedidos
+                        .Include(pedidos => pedidos.Cliente)
+                        .Where(pedidos => pedidos.UsuarioACargo == usuario && pedidos.Estado!= 3).ToListAsync();
+                    return pedidos;
+                }
+                return NotFound();
+            }
+            catch(Exception ex) {
+                return BadRequest(ex);
+            }
+          
+        }
+        // PUT: api/Pedidos/{id}
+        [HttpPut("AdquirirPedido/{id}")]
+        public async Task<IActionResult> PutAdquirirPedido(int id)
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+
+                if (usuario != null)
+                {
+                    var pedido = await _context.Pedidos.FirstOrDefaultAsync(e => e.Id == id);
+                    if (pedido != null)
+                    {
+                        
+                        pedido.Asignado = 1;
+                        pedido.UsuarioACargo = usuario;
+                        _context.Pedidos.Update(pedido);
+                        _context.SaveChanges();
+
+                        return Ok();
+                        
+
+                    }
+                    return BadRequest();
+                }
+                else 
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+
+        // PUT: api/Pedidos/ActualizarEstado/{id}
+        [HttpPut("ActualizarEstado")]
+        public async Task<IActionResult> PutPedido(Pedido pedido)
+        {
+            try
+            {
+              
                 if (pedido != null)
                 {
                     if (pedido.UsuarioACargo == User.Identity.Name)
                     {
-                        pedido.EstadoPedidoId = estadoPedidoId;
                         _context.Pedidos.Update(pedido);
                         _context.SaveChanges();
-                        return Ok();
+                        return Ok(pedido);
                     }
                     
                 }

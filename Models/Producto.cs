@@ -12,12 +12,17 @@ namespace Tienda_MAWS.Models
         Calzado = 1,
         Remera = 2,
         Pantalon = 3,
+        Pollera = 4,
     }
     public class Producto
     {
         [Display(Name = "Código")]
         public int Id { get; set; }
 
+
+        [Required]
+        [Display(Name = "Nombre")]
+        public String Nombre { get; set; }
 
         [Required]
         [Display(Name = "Descripcion")]
@@ -48,7 +53,7 @@ namespace Tienda_MAWS.Models
         public string Foto { get; set; }
 
 
-        [Display(Name = "Categoria")]
+        [Display(Name = "CategoriaNombre")]
         public string CategoriaNombre => Categoria > 0 ? ((enCategoria)Categoria).ToString().Replace('_', ' ') : "";
 
         public static IDictionary<int, string> ObtenerRoles()

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Tienda_MAWS.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace Tienda_MAWS.Api
 {
@@ -17,44 +19,79 @@ namespace Tienda_MAWS.Api
     public class ProductosController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IHostingEnvironment environment;
 
-        public ProductosController(DataContext context)
+        public ProductosController(DataContext context, IHostingEnvironment enviroment)
         {
             _context = context;
+            this.environment = enviroment;
         }
 
         // GET: api/Productos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
-            return await _context.Productos.ToListAsync();
-        }
-
-        // GET: api/Productos/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Producto>> GetProducto(int id)
-        {
-            var producto = await _context.Productos.FindAsync(id);
-
-            if (producto == null)
+            try
+            {
+                var productos = await _context.Productos.ToListAsync();
+                return Ok(productos);
+            }
+            catch
             {
                 return NotFound();
             }
-
-            return producto;
         }
+
+        // GET: api/Productos/{buscar}
+        [HttpGet("{buscar}")]
+        public async Task<ActionResult<List<Producto>>> GetProductoList(String buscar)
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+                if (usuario != null)
+                {
+                    var productos = await _context.Productos
+                        .Where(productos => productos.Nombre.Contains(buscar)).ToListAsync();
+                    return productos;
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        // GET: api/Productos/5
+        [HttpGet("Unico/{id}")]
+        public async Task<ActionResult<Producto>> GetProducto(int id)
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+                if (usuario != null)
+                {
+                    var producto = await _context.Productos.FindAsync(id);
+                    return producto;
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+
 
         // PUT: api/Productos/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProducto(int id, Producto producto)
+        [HttpPut]
+        public async Task<IActionResult> PutProducto(Producto producto)
         {
-            if (id != producto.Id)
-            {
-                return BadRequest();
-            }
-
+            
             _context.Entry(producto).State = EntityState.Modified;
 
             try
@@ -63,7 +100,7 @@ namespace Tienda_MAWS.Api
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductoExists(id))
+                if (!ProductoExists(producto.Id))
                 {
                     return NotFound();
                 }
@@ -73,20 +110,52 @@ namespace Tienda_MAWS.Api
                 }
             }
 
-            return NoContent();
+            return Ok(producto);
         }
 
-        // POST: api/Productos
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Producto>> PostProducto(Producto producto)
+        
+        [HttpPost("Foto")]
+        public async Task<ActionResult<Producto>> PostFotoProducto([FromForm] IFormFile file)
         {
+            if (file != null)
+            {
+                string root = environment.WebRootPath;
+                string path = Path.Combine(root, "Uploads");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+
+                }
+                string fileName = file.FileName;
+                string pathCompleto = Path.Combine(path, fileName);
+                using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+            }
+            return Ok("Foto subida satisfactoriamente");
+        }
+
+
+
+
+
+        [HttpPost("Post")]
+        public async Task<ActionResult<Producto>> PostProducto([FromBody]Producto producto)
+        {
+            try {
+            
             _context.Productos.Add(producto);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProducto", new { id = producto.Id }, producto);
+            return Ok(producto);
+            }
+            catch(Exception ex) {
+                return BadRequest(ex);
+            }
+
         }
+
 
         // DELETE: api/Productos/5
         [HttpDelete("{id}")]

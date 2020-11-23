@@ -164,3 +164,5 @@ C:\Users\Nahuel\Documents\GitHub\Proyecto-Tienda\obj\Debug\netcoreapp3.1\Tienda 
 C:\Users\Nahuel\Documents\GitHub\Proyecto-Tienda\obj\Debug\netcoreapp3.1\Tienda MAWS.dll
 C:\Users\Nahuel\Documents\GitHub\Proyecto-Tienda\obj\Debug\netcoreapp3.1\Tienda MAWS.pdb
 C:\Users\Nahuel\Documents\GitHub\Proyecto-Tienda\obj\Debug\netcoreapp3.1\Tienda MAWS.genruntimeconfig.cache
+C:\Users\Nahuel\Documents\GitHub\Proyecto-Tienda\obj\Debug\netcoreapp3.1\Tienda_MAWS.Properties.Resources.resources
+C:\Users\Nahuel\Documents\GitHub\Proyecto-Tienda\obj\Debug\netcoreapp3.1\Tienda MAWS.csproj.GenerateResource.cache

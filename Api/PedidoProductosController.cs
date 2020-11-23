@@ -24,25 +24,29 @@ namespace Tienda_MAWS.Api
         }
 
         // GET: api/PedidoProductos
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PedidoProducto>>> GetPedidosProductos()
+        [HttpGet("{pedidoId}")]
+        public async Task<ActionResult<IEnumerable<PedidoProducto>>> GetPedidosProductos(int pedidoId)
         {
-            return await _context.PedidosProductos.ToListAsync();
-        }
-
-        // GET: api/PedidoProductos/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PedidoProducto>> GetPedidoProducto(int id)
-        {
-            var pedidoProducto = await _context.PedidosProductos.FindAsync(id);
-
-            if (pedidoProducto == null)
+            try
             {
+                var usuario = User.Identity.Name;
+                if (usuario != null)
+                {
+
+                    var pedidosProducto = await _context.PedidosProductos
+                        .Include(pedidosProducto => pedidosProducto.Producto)
+                        .Include(pedidosProducto => pedidosProducto.Pedido)
+                        .Where(pedidosProducto => pedidosProducto.PedidoId == pedidoId).ToListAsync();
+                    return pedidosProducto;
+                }
                 return NotFound();
             }
-
-            return pedidoProducto;
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
+
 
         // PUT: api/PedidoProductos/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
