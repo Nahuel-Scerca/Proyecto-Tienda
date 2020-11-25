@@ -71,6 +71,10 @@ namespace Tienda_MAWS.Api
 
         }
 
+
+
+
+
         // GET: api/Pedidos/Adquiridos
         [HttpGet("Adquiridos")]
         public async Task<ActionResult<IEnumerable<Pedido>>> GetPedido()
@@ -92,6 +96,32 @@ namespace Tienda_MAWS.Api
             }
           
         }
+
+        // GET: api/Pedidos/Adquiridos/PorUsuarios
+        [HttpGet("Adquiridos/PorUsuario/{EmailUsuario}")]
+        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidoAdquiridosPorUsuario(String EmailUsuario)
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+
+                if (usuario != null)
+                {
+                    var pedidos = await _context.Pedidos
+                        .Where(pedidos => pedidos.UsuarioACargo == EmailUsuario && pedidos.Estado != 3).ToListAsync();
+
+                    return Ok(pedidos);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+        }
+
+
         // PUT: api/Pedidos/{id}
         [HttpPut("AdquirirPedido/{id}")]
         public async Task<IActionResult> PutAdquirirPedido(int id)
@@ -106,12 +136,12 @@ namespace Tienda_MAWS.Api
                     if (pedido != null)
                     {
                         
-                        pedido.Asignado = 1;
+                        pedido.Asignado=1;
                         pedido.UsuarioACargo = usuario;
                         _context.Pedidos.Update(pedido);
                         _context.SaveChanges();
 
-                        return Ok();
+                        return Ok("Adquirido Correctamente");
                         
 
                     }

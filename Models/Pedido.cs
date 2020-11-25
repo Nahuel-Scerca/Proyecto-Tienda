@@ -50,8 +50,8 @@ namespace Tienda_MAWS.Models
 
         public int Estado { get; set; }
 
-        public string EstadoNombre => Estado > 0 ? ((enEstado)Estado).ToString().Replace('_', ' ') : "";
-
+        //public string EstadoNombre => Estado > 0 ? ((enEstado)Estado).ToString().Replace('_', ' ') : "";
+        public string EstadoNombre { get; set; }
         public static IDictionary<int, string> ObtenerRoles()
         {
             SortedDictionary<int, string> roles = new SortedDictionary<int, string>();

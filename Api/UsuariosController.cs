@@ -48,6 +48,48 @@ namespace Tienda_MAWS.Models
             }
         }
 
+        // GET: api/Usuarios/Ventas
+        [HttpGet("Todos")]
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetVentasUsuario()
+        {
+            try
+            {
+                
+                var res = await  contexto.Usuarios.ToListAsync();
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        // GET: api/Usuarios/CantidadVentas
+        [HttpGet("CantidadVentas")]
+        public async Task<ActionResult<IEnumerable<UsuarioVentas>>> GetVentasYUsuario()
+        {
+            try
+            {
+                var usuarios  = await contexto.Usuarios.ToListAsync();
+                var usuarioVentas = new List<UsuarioVentas>();
+                foreach(Usuario usuario in usuarios)
+                {
+                    var cantidadVentas = await contexto.Pedidos.Where(pedido => pedido.UsuarioACargo == usuario.Email && pedido.Estado == 3).CountAsync();
+                    
+                    UsuarioVentas uv = new UsuarioVentas{
+                    Usuario=usuario,CantidadVentas=cantidadVentas
+                    };
+                    usuarioVentas.Add(uv);
+                }
+                
+                return Ok(usuarioVentas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
 
         // PUT: api/Usuarios/5    
         [HttpPut]
